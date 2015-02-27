@@ -93,12 +93,35 @@ public class MatchRanker {
             double newMMR = (double) curMMR;
             double dAllyMMR = (double) allyMMR;
             double dScore = (double) score;
-            double subtract = dAllyMMR / 5;
-            double add = score * 40;
+            double divisor = newMMR;
+            double subtract = dAllyMMR * dAllyMMR;
+            subtract /= 10000;
+            //subtract = subtract / divisor;
+            //subtract = subtract / 1100000;
+            if(curMMR < 1200)
+                divisor = 1200.0 / 1850.0;
+            else if(curMMR < 2000)
+                divisor = newMMR / 1850;
+            else
+                divisor = newMMR / 1500;
+            //System.out.println(divisor);
+            double add = score * 44;
+            //System.out.println(add);
             add = add * add;
+            //System.out.println(add);
             add = Math.pow(add, 1.0/3);
+            add = add / divisor;
+            //System.out.println(add);
+           // if(divisor < 1)
+             //   add = add * (1/divisor);
+            //else
+              //  add = add / divisor;
+            //System.out.println(newMMR);
+            //System.out.println(add);
             newMMR += add;
+            //System.out.println(newMMR);
             newMMR -= subtract;
+            //System.out.println(newMMR);
             int finalMMR = (int) Math.round(newMMR);
             return finalMMR;
         }

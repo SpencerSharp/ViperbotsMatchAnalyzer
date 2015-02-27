@@ -31,7 +31,7 @@ public class MatchAnalyzerv4
         MatchRanker a = new MatchRanker();
         teams = new ArrayList<Team>();
         matches = new ArrayList<Match>();
-        File myFile = new File("HHSQualifier2.xlsx");//CHANGE NAME TO CURRENT COMPETITION
+        File myFile = new File("ToltechQualifier.xlsx");//CHANGE NAME TO CURRENT COMPETITION
         InputStream inp = new FileInputStream(myFile);
         XSSFWorkbook wb = new XSSFWorkbook(inp);
         
@@ -115,6 +115,7 @@ public class MatchAnalyzerv4
             int oldMMRr1 = teams.get(indexOfr1).getMMR();
             int oldMMRr2 = teams.get(indexOfr2).getMMR();
             teams.get(indexOfr1).setMMR(a.calcMMR(oldMMRr1,oldMMRr2,redScore));
+            System.out.println("Match # " + (i + 1));
             System.out.println(teams.get(indexOfr1).getTeamString() + " now has an MMR of " + teams.get(indexOfr1).getMMR());
             teams.get(indexOfr2).setMMR(a.calcMMR(oldMMRr2,oldMMRr1,redScore));
             System.out.println(teams.get(indexOfr2).getTeamString() + " now has an MMR of " + teams.get(indexOfr2).getMMR());
@@ -313,7 +314,7 @@ public class MatchAnalyzerv4
         quadx.setFillPattern(CellStyle.SOLID_FOREGROUND);
         
         //add the teams (in ranked order) to the temp local spreadsheet one at a time
-        for(int i = 0; i < teams.size();i++)
+        for(int i = 0; i < rankingsNames.size();i++)
         {
             Row row = rankings.createRow(i + 1);
             Cell rankCell = row.createCell(0);
@@ -375,6 +376,5 @@ public class MatchAnalyzerv4
         
         //close the output stream
         os.close();
-        System.out.println(teams.size());
     }
 }

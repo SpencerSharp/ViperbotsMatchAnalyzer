@@ -26,7 +26,10 @@ public class Data {
         int avg = mr.getAvg();
         int std = mr.getConsistency();
         teamName = t.getTeamName();
-        range = (avg - std) + "-" + (avg + std);
+        int min = avg - std;
+        if (min < 0)
+            min = 0;
+        range = min + "-" + (avg + std);
         STDA = mr.getSTDA();
         Consistency = mr.getConsistency();
         partnerMMR = t.getPartnerMMR();
