@@ -7,7 +7,7 @@
 //
 //======================================================
 
-package matchanalyzerv2;
+package matchanalyzerv6;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -121,6 +121,19 @@ public class Team
         return TeamMMR;
     }
 
+    public Double getRatio()
+    {
+        Data data = new Data(this);
+        int MMR = TeamMMR;
+        int score = data.STDA;
+        int con = data.Consistency;
+        Double a = 0.0;
+        a = ((score*0.5+MMR*0.5)*2)/(Math.pow(con, 1.0/4));
+        Double b = 0.0;
+        b = (a+score)/2;
+        return b;
+    }
+    
     public Integer getTeamNum()
     {
         return Integer.parseInt(TeamNum);

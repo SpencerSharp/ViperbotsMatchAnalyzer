@@ -7,7 +7,7 @@
 //
 //======================================================
 
-package matchanalyzerv2;
+package matchanalyzerv6;
 
 import java.util.*;
 import java.io.*;
@@ -22,16 +22,20 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import java.awt.Color;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
-public class MatchAnalyzerv4
+public class MatchAnalyzerv6
 {
     public static void main (String [] args) throws IOException 
     {
+        System.out.println("===========================================\n\nFTC Match Analyzer\nBy: Ethan McCosky and Spencer Sharp\n\nUse this software to analyze the scoring\ncapabilities of teams in an FTC Competition\n\nPlease follow file conventions specified\n\n===========================================\n\n");
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Please enter the name of the file you wish to analyze (Without file extension) :: ");
+        String fName = sc.nextLine();
         ArrayList<Team> teams;
         ArrayList<Match> matches;
         MatchRanker a = new MatchRanker();
         teams = new ArrayList<Team>();
         matches = new ArrayList<Match>();
-        File myFile = new File("ToltechQualifier.xlsx");//CHANGE NAME TO CURRENT COMPETITION
+        File myFile = new File(fName + ".xlsx");//CHANGE NAME TO CURRENT COMPETITION
         InputStream inp = new FileInputStream(myFile);
         XSSFWorkbook wb = new XSSFWorkbook(inp);
         
@@ -213,6 +217,8 @@ public class MatchAnalyzerv4
         ArrayList<Integer> tempMMR;
         tempMMR = new ArrayList<Integer>();
         ArrayList<Team> tempTeams = new ArrayList<Team>();
+        ArrayList<Double> tempRatios;
+        tempRatios = new ArrayList<Double>();
         
         //Update team object variable and copy arrayLists to temp ArrayLists
         for(Team team : teams)
@@ -221,30 +227,35 @@ public class MatchAnalyzerv4
             tempNames.add(team.getTeamString());
             tempMMR.add(team.getMMR());
             tempTeams.add(team);
+            tempRatios.add(team.getRatio());
         }
         
         //Copy the tempArrayLists to the ranked lists in sorted order
         ArrayList<String> rankingsNames = new ArrayList<String>();
         ArrayList<Integer> rankingsMMR = new ArrayList<Integer>();
         ArrayList<Data> rankingsData = new ArrayList<Data>();
+        ArrayList<Double> rankingsRatio = new ArrayList<Double>();
         for(int i = 0; i < teams.size();i++)
         {
             int spot = 0;
             int maxMMR = 0;
+            Double maxRatio = 0.0;
             for(int j = 0; j < tempNames.size();j++)
             {
-                if(tempMMR.get(j) > maxMMR)
+                if(tempRatios.get(j) > maxRatio)
                 {
                     spot = j;
-                    maxMMR = tempMMR.get(j);
+                    maxRatio = tempRatios.get(j);
                 }
             }
             rankingsNames.add(tempNames.get(spot));
             rankingsMMR.add(tempMMR.get(spot));
             rankingsData.add(new Data(tempTeams.get(spot)));
+            rankingsRatio.add(tempRatios.get(spot));
             tempMMR.remove(spot);
             tempNames.remove(spot);
             tempTeams.remove(spot);
+            tempRatios.remove(spot);
         }
         
         //Instantiate the temp local ranking sheet
@@ -280,6 +291,8 @@ public class MatchAnalyzerv4
         consTitle.setCellValue("Consistency");
         Cell MMRavgTitle = row1.createCell(7);
         MMRavgTitle.setCellValue("Average MMR of Partners");
+        Cell BVMRatioTitle = row1.createCell(8);
+        BVMRatioTitle.setCellValue("BVM Ratio");
         
         
         //Section for custom team style colors
@@ -368,6 +381,8 @@ public class MatchAnalyzerv4
             consCell.setCellValue(rankingsData.get(i).Consistency);
             Cell MMRavg = row.createCell(7);
             MMRavg.setCellValue(rankingsData.get(i).partnerMMR);
+            Cell BVM = row.createCell(8);
+            BVM.setCellValue(rankingsRatio.get(i));
             
         }
         
