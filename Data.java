@@ -18,6 +18,8 @@ public class Data {
     public final int STDA;
     public final int Consistency;
     public final int partnerMMR;
+    public final int QP;
+    public final int RP;
     
     public Data(Team t)
     {
@@ -33,6 +35,8 @@ public class Data {
         STDA = mr.getSTDA();
         Consistency = mr.getConsistency();
         partnerMMR = t.getPartnerMMR();
+        QP = t.getQP();
+        RP = t.getRP();
     }
     
 }

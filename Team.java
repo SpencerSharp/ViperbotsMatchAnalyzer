@@ -20,6 +20,8 @@ public class Team
     private Integer PartnerMMR;
     private ArrayList<Integer> scores;
     private ArrayList<Team> Partners;
+    private int QP;
+    private int RP;
     
     public Team()
     {
@@ -36,6 +38,32 @@ public class Team
         scores = new ArrayList<Integer>();
         scores.add(score);
         TeamMMR = 1500;
+        QP = 0;
+        RP = 0;
+    }
+    
+    public Team(String s, Integer theirScore, Integer oppScore)
+    {
+        TeamNum = s;
+        TeamName = "";
+        scores = new ArrayList<Integer>();
+        scores.add(theirScore);
+        TeamMMR = 1500;
+        QP = 0;
+        RP = 0;
+        if(theirScore > oppScore)
+        {
+            QP += 2;
+            RP += oppScore;
+        }
+        else if(oppScore > theirScore)
+            RP += theirScore;
+        else
+        {
+            RP++;
+            RP += theirScore;
+        }
+            
     }
     
     public Team(Integer num)
@@ -63,6 +91,26 @@ public class Team
         TeamMMR = num;
     }
     
+    public void setQP(int param1)
+    {
+        QP = param1;
+    }
+    
+    public void setRP(int param)
+    {
+        RP = param;
+    }
+    
+    public Integer getQP()
+    {
+        return QP;
+    }
+    
+    public Integer getRP()
+    {
+        return RP;
+    }
+    
     private void addPartner(Team t)
     {
         Partners.add(t);
@@ -80,6 +128,23 @@ public class Team
                 addPartner(getTeam(list, round.blue2()));
             else
                 addPartner(getTeam(list, round.blue1()));
+        }
+    }
+    
+    public void addMatch(Integer ourScore, Integer theirScore)
+    {
+        scores.add(ourScore);
+        if(ourScore > theirScore)
+        {
+            QP += 2;
+            RP += theirScore;
+        }
+        else if(ourScore < theirScore)
+            RP += ourScore;
+        else
+        {
+            QP += 1;
+            RP += ourScore;
         }
     }
     
@@ -121,6 +186,7 @@ public class Team
         return TeamMMR;
     }
 
+    
     public Double getRatio()
     {
         Data data = new Data(this);

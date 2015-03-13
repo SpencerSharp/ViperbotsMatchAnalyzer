@@ -38,15 +38,15 @@ public class MatchAnalyzerv6
         File myFile = new File(fName + ".xlsx");//CHANGE NAME TO CURRENT COMPETITION
         InputStream inp = new FileInputStream(myFile);
         XSSFWorkbook wb = new XSSFWorkbook(inp);
-        
+
         //Access the match result sheet
         Sheet matchList = wb.getSheetAt(0);
         Row matchNumRow = matchList.getRow(0);
         Cell amount = matchNumRow.getCell(0);
-        
+
         //get the number of matches
         Double matchNum = amount.getNumericCellValue();
-        
+
         //import each match and add to the matches list
         System.out.println("Importing Matches...");
         for(int i = 2; i < matchNum + 2; i++)
@@ -67,7 +67,7 @@ public class MatchAnalyzerv6
             matches.add(match);
         }
         inp.close();
-        
+
         //Loop through the matches and calculate MMR for each team
         System.out.println("Looping through matches...");
         for(int i = 0; i < matches.size(); i++)
@@ -91,12 +91,12 @@ public class MatchAnalyzerv6
             if(indexOfr1 < 0)
             {
                 indexOfr1 = teams.size();
-                Team newTeam1 = new Team(t1, redScore);
+                Team newTeam1 = new Team(t1, redScore, blueScore);
                 teams.add(newTeam1);
             }
             else
             {
-                teams.get(indexOfr1).addScore(redScore);
+                teams.get(indexOfr1).addMatch(redScore,blueScore);
             }
             
             //Red 2
@@ -107,12 +107,12 @@ public class MatchAnalyzerv6
             if(indexOfr2 < 0)
             {
                 indexOfr2 = teams.size();
-                Team newTeam2 = new Team(t2, redScore);
+                Team newTeam2 = new Team(t2, redScore, blueScore);
                 teams.add(newTeam2);
             }
             else
             {
-                teams.get(indexOfr2).addScore(redScore);
+                teams.get(indexOfr2).addMatch(redScore,blueScore);
             }
             
             //Update MMR value for both red teams
@@ -135,12 +135,12 @@ public class MatchAnalyzerv6
             if(indexOfb1 < 0)
             {
                 indexOfb1 = teams.size();
-                Team newTeam1 = new Team(t3, blueScore);
+                Team newTeam1 = new Team(t3, blueScore, redScore);
                 teams.add(newTeam1);
             }
             else
             {
-                teams.get(indexOfb1).addScore(blueScore);
+                teams.get(indexOfb1).addMatch(blueScore,redScore);
             }
             
             //Blue 2
@@ -151,12 +151,12 @@ public class MatchAnalyzerv6
             if(indexOfb2 < 0)
             {
                 indexOfb2 = teams.size();
-                Team newTeam2 = new Team(t4, blueScore);
+                Team newTeam2 = new Team(t4, blueScore, redScore);
                 teams.add(newTeam2);
             }
             else
             {
-                teams.get(indexOfb2).addScore(blueScore);
+                teams.get(indexOfb2).addMatch(blueScore,redScore);
             }
             
             //Update MMR value for both blue teams
@@ -208,9 +208,9 @@ public class MatchAnalyzerv6
                 teams.get(teamIndex).setName(teamName);
             }
         }
-        
+
         //Rank teams based on MMR
-        
+
         //Create temp arrayLists
         ArrayList<String> tempNames;
         tempNames = new ArrayList<String>();
@@ -219,7 +219,7 @@ public class MatchAnalyzerv6
         ArrayList<Team> tempTeams = new ArrayList<Team>();
         ArrayList<Double> tempRatios;
         tempRatios = new ArrayList<Double>();
-        
+
         //Update team object variable and copy arrayLists to temp ArrayLists
         for(Team team : teams)
         {
@@ -229,7 +229,7 @@ public class MatchAnalyzerv6
             tempTeams.add(team);
             tempRatios.add(team.getRatio());
         }
-        
+
         //Copy the tempArrayLists to the ranked lists in sorted order
         ArrayList<String> rankingsNames = new ArrayList<String>();
         ArrayList<Integer> rankingsMMR = new ArrayList<Integer>();
@@ -257,7 +257,8 @@ public class MatchAnalyzerv6
             tempTeams.remove(spot);
             tempRatios.remove(spot);
         }
-        
+
+
         //Instantiate the temp local ranking sheet
         InputStream inp2 = new FileInputStream(myFile);
         Workbook rankingsWB = new XSSFWorkbook(inp2);
@@ -272,7 +273,7 @@ public class MatchAnalyzerv6
             System.out.println("Rankings sheet not found... Creating one");
             rankings = rankingsWB.createSheet("Rankings");
         }
-        
+
         //Create temp local ranking spreadsheet headers
         Row row1 = rankings.createRow(0);
         Cell rankTitle = row1.createCell(0);
@@ -293,10 +294,13 @@ public class MatchAnalyzerv6
         MMRavgTitle.setCellValue("Average MMR of Partners");
         Cell BVMRatioTitle = row1.createCell(8);
         BVMRatioTitle.setCellValue("BVM Ratio");
-        
-        
+        Cell QPTitle = row1.createCell(9);
+        QPTitle.setCellValue("QP points");
+        Cell RPTitle = row1.createCell(10);
+        RPTitle.setCellValue("RP points");
+
         //Section for custom team style colors
-        
+
         //7161 style colors
         CellStyle bff = rankingsWB.createCellStyle();
         bff.setFillForegroundColor(IndexedColors.AQUA.getIndex());
@@ -325,7 +329,7 @@ public class MatchAnalyzerv6
         XSSFColor quadxColor = new XSSFColor(Color.decode("#D3B354"));
         quadx.setFillForegroundColor(quadxColor);
         quadx.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        
+
         //add the teams (in ranked order) to the temp local spreadsheet one at a time
         for(int i = 0; i < rankingsNames.size();i++)
         {
@@ -335,7 +339,7 @@ public class MatchAnalyzerv6
             Cell teamCell = row.createCell(1);
             teamCell.setCellValue(Integer.parseInt(rankingsNames.get(i)));
             System.out.println("Adding " + rankingsNames.get(i) + " to the ranking list");
-            
+
             //Check if custom style colors are needed
             if(Integer.parseInt(rankingsNames.get(i)) == 7161)
             {
@@ -367,7 +371,7 @@ public class MatchAnalyzerv6
                 System.out.println("6299 colored gold!");
                 teamCell.setCellStyle(quadx);
             }
-            
+
             //Assign appropriate data to the temp local spreadsheet
             Cell nameCell = row.createCell(2);
             nameCell.setCellValue(rankingsData.get(i).teamName);
@@ -383,12 +387,16 @@ public class MatchAnalyzerv6
             MMRavg.setCellValue(rankingsData.get(i).partnerMMR);
             Cell BVM = row.createCell(8);
             BVM.setCellValue(rankingsRatio.get(i));
-            
+            Cell QPval = row.createCell(9);
+            QPval.setCellValue(rankingsData.get(i).QP);
+            Cell RPval = row.createCell(10);
+            RPval.setCellValue(rankingsData.get(i).RP);
         }
-        
+
+
         //write the temp local spreadsheet to the master spreadsheet
         rankingsWB.write(os);
-        
+
         //close the output stream
         os.close();
     }
