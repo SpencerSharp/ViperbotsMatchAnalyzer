@@ -26,17 +26,12 @@ public class MatchRanker {
 
         public int getAvg()
         {
-            int sum = 0;
-            for (Integer item : scores)
+            int sum = 0, avg = 0;
+            for(int i = 1; i <= scores.size();i++)
             {
-                sum += item;
+                sum+=scores.get(i-1);
+                avg = sum / i;
             }
-            int length = scores.size();
-            int avg = 0;
-            if (length > 0)
-                avg = sum / scores.size();
-            else
-                avg = sum;
             return avg;
         }
 
@@ -48,13 +43,13 @@ public class MatchRanker {
             //get differences between each score and avg
             for(Integer score : scores)
             {
-                    vars.add(Math.abs(score - avg));
+                vars.add(Math.abs(score - avg));
             }
 
             Double var = 0.0;
             for (Integer item : vars)
             {
-                    var += Math.pow(item, 2);
+                var += Math.pow(item, 2);
             }
             Double std = Math.sqrt(var/scores.size());
             return std;
@@ -62,8 +57,22 @@ public class MatchRanker {
     	
     	public int getConsistency()
     	{
-            int a = (int) Math.round(std());
-            return a;
+            int avg = getAvg();
+            ArrayList<Integer> vars = new ArrayList<Integer>();
+
+            //get differences between each score and avg
+            for(Integer score : scores)
+            {
+                vars.add(Math.abs(score - avg));
+            }
+
+            Double var = 0.0;
+            for (Integer item : vars)
+            {
+                var += item;
+            }
+            Double std = var/scores.size();
+            return std.intValue();
     	}
     	
     	public int getSTDA()
@@ -99,9 +108,9 @@ public class MatchRanker {
             //subtract = subtract / divisor;
             //subtract = subtract / 1100000;
             if(curMMR < 1200)
-                divisor = 1200.0 / 1850.0;
+                divisor = 1200.0 / 1500.0;
             else if(curMMR < 2000)
-                divisor = newMMR / 1850;
+                divisor = newMMR / 2000;
             else
                 divisor = newMMR / 1500;
             //System.out.println(divisor);
@@ -124,5 +133,25 @@ public class MatchRanker {
             //System.out.println(newMMR);
             int finalMMR = (int) Math.round(newMMR);
             return finalMMR;
+        }
+        
+        public String matchOdds(int teamNum, Team blue1, Team blue2, Team red1, Team red2)
+        {
+            double odds = 0;
+            if(teamNum == blue1.getTeamNum())
+            {
+                odds = red1.getMMR() + red2.getMMR();
+                odds -= blue2.getMMR();
+                odds /= 100;
+            }
+            return odds + "%";
+        }
+        
+        public int matchDifficulty(int allyMMR, int opp1MMR, int opp2MMR)
+        {
+            double difficulty = opp1MMR + opp2MMR;
+            difficulty -= allyMMR;
+            difficulty /= 100;
+            return (int) difficulty;
         }
 }
