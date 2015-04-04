@@ -192,9 +192,8 @@ public class Team
         Data data = new Data(this);
         int MMR = TeamMMR;
         int score = data.STDA;
-        int con = data.Consistency;
         Double a = 0.0;
-        a = ((score*0.5+MMR*0.5)*2)/(Math.pow(con, 1.0/4));
+        a = ((score*0.4+MMR*0.6)+data.QP*0.5)/55;
         Double b = 0.0;
         b = (a+score)/2;
         return b;
