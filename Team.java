@@ -22,6 +22,7 @@ public class Team
     private ArrayList<Team> Partners;
     private int QP;
     private int RP;
+    private int defensive;
     
     public Team()
     {
@@ -29,8 +30,22 @@ public class Team
         TeamName = "";
         scores = new ArrayList<Integer>();
         TeamMMR = 1500;
+        QP = 0;
+        RP = 0;
+        defensive = 0;
     }
     
+    public Team(String name)
+    {
+        TeamNum = name;
+        TeamName = "";
+        scores = new ArrayList<Integer>();
+        TeamMMR = 1500;
+        QP = 0;
+        RP = 0;
+        defensive = 0;
+    }
+        
     public Team(String s, Integer score)
     {
         TeamNum = s;
@@ -40,6 +55,7 @@ public class Team
         TeamMMR = 1500;
         QP = 0;
         RP = 0;
+        defensive = 0;
     }
     
     public Team(String s, Integer theirScore, Integer oppScore)
@@ -63,7 +79,7 @@ public class Team
             RP++;
             RP += theirScore;
         }
-            
+        defensive = 0;
     }
     
     public Team(Integer num)
@@ -72,6 +88,9 @@ public class Team
         TeamName = "";
         scores = new ArrayList<Integer>();
         TeamMMR = 1500;
+        QP = 0;
+        RP = 0;
+        defensive = 0;
     }
     
     public boolean equals(Team thing)
