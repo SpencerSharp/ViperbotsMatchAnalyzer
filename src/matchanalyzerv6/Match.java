@@ -1,9 +1,9 @@
-//===============Match Analyzer v2.3====================
+//===============Match Analyzer v6====================
 //
 //@Authors: Spencer Sharp and Ethan McCosky
-//@Release Date: 1/24/15
-//@Contributing Teams: 4545 Ouroboros and 4546 SnakeByte
-//@File: Match.java (Team Class)
+//@Release Date: 4/4/15
+//@Contributing Teams: 4545, 4546
+//@File: Match.java (Holds match data)
 //
 //======================================================
 
