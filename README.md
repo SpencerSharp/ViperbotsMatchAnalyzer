@@ -1,6 +1,6 @@
 #ViperbotsMatchAnalyzer
 Constantly updated FTC Match Analyzation Software originally created by Spencer Sharp and Ethan McCosky. 
-The project is currently maintained by Spencer Sharp, Ethan McCosky.
+The project is currently maintained by Spencer Sharp and Ethan McCosky from FTC team 4546 Snakebyte.
 
 This software allows teams to analyze the level of teams at the competition based solely on final match results. The beauty of this software is that it works quite accurately with just final scores and doesnt require intensive stand scouting. It is a great resource for rookie teams and those just starting data analysis.
 
