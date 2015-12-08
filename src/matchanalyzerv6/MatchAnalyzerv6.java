@@ -28,10 +28,14 @@ public class MatchAnalyzerv6
     {
         System.out.println("===========================================\n\nFTC Match Analyzer\nBy: Ethan McCosky and Spencer Sharp\n\nUse this software to analyze the scoring\ncapabilities of teams in an FTC Competition\n\nPlease follow file conventions specified\n\n===========================================\n\n");
         String choice;
+        int loops = 1;
         do{    
             Scanner sc = new Scanner(System.in);
             System.out.print("Please enter the name of the file you wish to analyze (Without file extension) :: ");
             String fName = sc.nextLine();
+            System.out.println();
+            System.out.print("How many loops would you like to run : ");
+            loops = sc.nextInt();
             ArrayList<Team> teams;
             ArrayList<Match> matches;
             MatchRanker a = new MatchRanker();
@@ -57,13 +61,21 @@ public class MatchAnalyzerv6
                 //get the teams and score data
                 Row row = matchList.getRow(i);
                 Cell red1 = row.getCell(1);
-                String red1Name = String.valueOf((int)red1.getNumericCellValue());
+                String red1Name = "";
+                String red2Name = "";
+                String blue1Name = "";
+                String blue2Name = "";
+                if(!red1.toString().contains("*"))
+                    red1Name = String.valueOf((int)red1.getNumericCellValue());
                 Cell red2 = row.getCell(2);
-                String red2Name = String.valueOf((int)red2.getNumericCellValue());
+                if(!red2.toString().contains("*"))
+                    red2Name = String.valueOf((int)red2.getNumericCellValue());
                 Cell blue1 = row.getCell(3);
-                String blue1Name = String.valueOf((int)blue1.getNumericCellValue());
+                if(!blue1.toString().contains("*"))
+                    blue1Name = String.valueOf((int)blue1.getNumericCellValue());
                 Cell blue2 = row.getCell(4);
-                String blue2Name = String.valueOf((int)blue2.getNumericCellValue());
+                if(!blue2.toString().contains("*"))
+                    blue2Name = String.valueOf((int)blue2.getNumericCellValue());
                 Cell redScore = row.getCell(5);
                 Cell blueScore = row.getCell(6);
                 Match match = new Match(red1Name,red2Name,blue1Name,blue2Name,redScore.getNumericCellValue(),blueScore.getNumericCellValue());
@@ -71,10 +83,18 @@ public class MatchAnalyzerv6
             }
             inp.close();
 
+            
+            long start = System.nanoTime();
             //Loop through the matches and calculate MMR for each team
             System.out.println("Looping through matches...");
+            System.out.println(matches.size());
+            int tc = 0;
+            for(int qr = 0; qr < loops; qr++){
             for(int i = 0; i < matches.size(); i++)
             {
+                System.out.println(matches.get(i));
+                System.out.println("TC:"+ tc);
+                tc++;
                 //Set default variables and pull in match data
                 int indexOfr1 = -1;
                 int indexOfr2 = -1;
@@ -96,6 +116,7 @@ public class MatchAnalyzerv6
                     indexOfr1 = teams.size();
                     Team newTeam1 = new Team(t1, redScore, blueScore);
                     teams.add(newTeam1);
+                    System.out.println(newTeam1);
                 }
                 else
                 {
@@ -122,10 +143,10 @@ public class MatchAnalyzerv6
                 int oldMMRr1 = teams.get(indexOfr1).getMMR();
                 int oldMMRr2 = teams.get(indexOfr2).getMMR();
                 teams.get(indexOfr1).setMMR(a.calcMMR(oldMMRr1,oldMMRr2,redScore));
-                System.out.println("Match # " + (i + 1));
-                System.out.println(teams.get(indexOfr1).getTeamString() + " now has an MMR of " + teams.get(indexOfr1).getMMR());
+                //System.out.println("Match # " + (i + 1));
+                //System.out.println(teams.get(indexOfr1).getTeamString() + " now has an MMR of " + teams.get(indexOfr1).getMMR());
                 teams.get(indexOfr2).setMMR(a.calcMMR(oldMMRr2,oldMMRr1,redScore));
-                System.out.println(teams.get(indexOfr2).getTeamString() + " now has an MMR of " + teams.get(indexOfr2).getMMR());
+                //System.out.println(teams.get(indexOfr2).getTeamString() + " now has an MMR of " + teams.get(indexOfr2).getMMR());
 
                 //Create teams if they don't exist, get the index if they do
                 //also, assign the appropriate score to each team
@@ -166,11 +187,13 @@ public class MatchAnalyzerv6
                 int oldMMRb1 = teams.get(indexOfb1).getMMR();
                 int oldMMRb2 = teams.get(indexOfb2).getMMR();
                 teams.get(indexOfb1).setMMR(a.calcMMR(oldMMRb1,oldMMRb2,blueScore));
-                System.out.println(teams.get(indexOfb1).getTeamString() + " now has an MMR of " + teams.get(indexOfb1).getMMR());
+                //System.out.println(teams.get(indexOfb1).getTeamString() + " now has an MMR of " + teams.get(indexOfb1).getMMR());
                 teams.get(indexOfb2).setMMR(a.calcMMR(oldMMRb2,oldMMRb1,blueScore));
-                System.out.println(teams.get(indexOfb2).getTeamString() + " now has an MMR of " + teams.get(indexOfb2).getMMR());
+                //System.out.println(teams.get(indexOfb2).getTeamString() + " now has an MMR of " + teams.get(indexOfb2).getMMR());
             }
-
+            }
+            long end = System.nanoTime();
+            System.out.println("Elapsed loop time " + (((double)(end - start))/1000000000));
             //Set the each teams name from the provided team list (Sheet 3)
 
             //Open input stream
@@ -184,6 +207,11 @@ public class MatchAnalyzerv6
             Double teamCount = totTeams.getNumericCellValue();
 
             //get each team name and add it to the appropriate team
+            /*for(Match team: matches)
+            {
+                System.out.println(team);
+                System.out.println("hello");
+            }*/
             for (int i = 1; i <= teamCount; i++)
             {
                 Row teamRow = teamList.getRow(i);
