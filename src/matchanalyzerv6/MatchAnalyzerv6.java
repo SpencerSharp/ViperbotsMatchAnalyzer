@@ -89,8 +89,9 @@ public class MatchAnalyzerv6
             System.out.println("Looping through matches...");
             System.out.println(matches.size());
             int tc = 0;
-            for(int qr = 0; qr < loops; qr++){
-            for(int i = 0; i < matches.size(); i++)
+            for(int qr = 0; qr < loops; qr++) //Multiple loops for improved MMR analysis (YOU DONT NEED THIS EDDIE)
+            {
+            for(int i = 0; i < matches.size(); i++) //THIS LOOP loops thru matches arraylist, adds teams into team arraylist, along with their matches
             {
                 System.out.println(matches.get(i));
                 System.out.println("TC:"+ tc);
